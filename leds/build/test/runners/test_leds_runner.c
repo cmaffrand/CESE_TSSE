@@ -2,6 +2,8 @@
 
 /*=======Automagically Detected Files To Include=====*/
 #include "unity.h"
+#include "cmock.h"
+#include "mock_errores.h"
 
 int GlobalExpectCount;
 int GlobalVerifyOrder;
@@ -11,6 +13,10 @@ char* GlobalOrderError;
 extern void setUp(void);
 extern void tearDown(void);
 extern void test_todos_los_leds_inician_apagados(void);
+extern void test_prender_un_led(void);
+extern void test_apagar_un_led(void);
+extern void test_prender_y_apagar_leds(void);
+extern void test_error_en_parametro (void);
 
 
 /*=======Mock Management=====*/
@@ -19,16 +25,16 @@ static void CMock_Init(void)
   GlobalExpectCount = 0;
   GlobalVerifyOrder = 0;
   GlobalOrderError = NULL;
+  mock_errores_Init();
 }
 static void CMock_Verify(void)
 {
+  mock_errores_Verify();
 }
 static void CMock_Destroy(void)
 {
+  mock_errores_Destroy();
 }
-
-/*=======Setup (stub)=====*/
-void setUp(void) {}
 
 /*=======Teardown (stub)=====*/
 void tearDown(void) {}
@@ -81,7 +87,12 @@ static void run_test(UnityTestFunction func, const char* name, UNITY_LINE_TYPE l
 int main(void)
 {
   UnityBegin("test_leds.c");
-  run_test(test_todos_los_leds_inician_apagados, "test_todos_los_leds_inician_apagados", 3);
+  run_test(test_todos_los_leds_inician_apagados, "test_todos_los_leds_inician_apagados", 25);
+  run_test(test_prender_un_led, "test_prender_un_led", 33);
+  run_test(test_apagar_un_led, "test_apagar_un_led", 40);
+  run_test(test_prender_y_apagar_leds, "test_prender_y_apagar_leds", 48);
+  run_test(test_error_en_parametro , "test_error_en_parametro ", 57);
 
+  CMock_Guts_MemFreeFinal();
   return UnityEnd();
 }
