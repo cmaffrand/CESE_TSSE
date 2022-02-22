@@ -1,1 +1,1 @@
-# CESE_TSSE
+Repositorio que contiene las entregas para la asignatura #CESE_TSSE Perteneciente a la especialización de sistemas embebidos de la UBA.
