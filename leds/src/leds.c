@@ -4,7 +4,7 @@
  * License: Free
  * Date: 2021/11/22
  * Version: v1.0
- * Descripcion: archivo bajo prueba TP3 de Testing de software en sistemas 
+ * Descripcion: archivo bajo prueba TP3 de Testing de software en sistemas
  * embebidos
  *===========================================================================*/
 
@@ -15,7 +15,6 @@
 #define LED_ALL_ON 0xFFFF
 #define VALID_LED_LOW 1
 #define VALID_LED_HIGH 16
-#define NULL ((void *)0)
 #define SHIFT_VALUE 1
 #define MASK_VALUE 1
 #define LED_ON 1
@@ -65,12 +64,19 @@ void allLedsOff(void)
 
 uint8_t LedsState(uint8_t led)
 {
-    if ((*puerto & MASK_VALUE << led - SHIFT_VALUE) == 0)
+    if (led <= VALID_LED_HIGH && led >= VALID_LED_LOW)
     {
-        return LED_OFF;
+        if ((*puerto & MASK_VALUE << led - SHIFT_VALUE) == 0)
+        {
+            return LED_OFF;
+        }
+        else
+        {
+            return LED_ON;
+        }
     }
     else
     {
-        return LED_ON;
+        RegistrarMensaje(0, __FUNCTION__, __LINE__, "Numero de Led Invalido");
     }
 }

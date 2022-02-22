@@ -116,3 +116,16 @@ void test_consultar_estado_led_encendido(void)
     ledStateValue = LedsState(LEDON);
     TEST_ASSERT_EQUAL_HEX8(0x1, ledStateValue);
 }
+
+// Probar valores invalidos para los parametros ledsState
+void test_error_en_parametro_ledsState(void)
+{
+    RegistrarMensaje_Expect(0, "LedsState", 0, "Numero de Led Invalido");
+    RegistrarMensaje_IgnoreArg_linea();
+    RegistrarMensaje_Expect(0, "LedsState", 0, "Numero de Led Invalido");
+    RegistrarMensaje_IgnoreArg_linea();
+    for (uint8_t i = INVALID_LED_LOW; i <= INVALID_LED_HIGH; i++)
+    {
+        LedsState(i);
+    }
+}
