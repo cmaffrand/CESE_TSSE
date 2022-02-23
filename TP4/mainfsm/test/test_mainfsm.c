@@ -152,6 +152,21 @@ void test_mainfsm_from_end_to_armed_CFG(void)
     TEST_ASSERT_EQUAL(ARMED, state);
 }
 
+// Test from end to report via (RUN)
+void test_mainfsm_from_end_to_report_RUN(void)
+{
+    fsmInit();
+    mainFsmStates_t state;
+    fsmCmd(LD);
+    fsmCmd(LS);
+    fsmCmd(CFG);
+    fsmCmd(RUN);
+    fsmCmd(GR);
+    fsmCmd(RUN);
+    state = getState();
+    TEST_ASSERT_EQUAL(REPORT, state);
+}
+
 // Test from all states to inti via (RST)
 void test_mainfsm_reset_RST(void)
 {
@@ -292,9 +307,6 @@ void test_mainfsm_incorrect_cmd_end(void)
     state = getState();
     TEST_ASSERT_EQUAL(END, state);
     fsmCmd(LD);
-    state = getState();
-    TEST_ASSERT_EQUAL(END, state);
-    fsmCmd(RUN);
     state = getState();
     TEST_ASSERT_EQUAL(END, state);
 }
@@ -568,29 +580,17 @@ void test_mainfsm_generar_evento_report(void)
     TEST_ASSERT_EQUAL(true, newEvent);
     fsmCmd(RUN);
     resetEvent();
+    fsmCmd(RUN);
+    event = getEvent();
+    newEvent = getNewEvent();
+    TEST_ASSERT_EQUAL(EVENT_RUN, event);
+    TEST_ASSERT_EQUAL(true, newEvent);
+    resetEvent();
     fsmCmd(GR);
     event = getEvent();
     newEvent = getNewEvent();
     TEST_ASSERT_EQUAL(EVENT_GR, event);
     TEST_ASSERT_EQUAL(true, newEvent);
-}
-
-// Test no generacion de eventos en report
-void test_mainfsm_no_generar_eventos_en_report(void)
-{
-    fsmInit();
-    mainFsmStates_t event;
-    bool newEvent;
-    fsmCmd(LS);
-    fsmCmd(LD);
-    fsmCmd(CFG);
-    fsmCmd(RUN);
-    resetEvent();
-    fsmCmd(RUN);
-    event = getEvent();
-    newEvent = getNewEvent();
-    TEST_ASSERT_EQUAL(EVENT_NONE, event);
-    TEST_ASSERT_EQUAL(false, newEvent);
 }
 
 // Test de generacion de eventos END
@@ -622,6 +622,14 @@ void test_mainfsm_generar_evento_end(void)
     newEvent = getNewEvent();
     TEST_ASSERT_EQUAL(EVENT_CFG, event);
     TEST_ASSERT_EQUAL(true, newEvent);
+    fsmCmd(RUN);
+    fsmCmd(GR);
+    resetEvent();
+    fsmCmd(RUN);
+    event = getEvent();
+    newEvent = getNewEvent();
+    TEST_ASSERT_EQUAL(EVENT_RUN, event);
+    TEST_ASSERT_EQUAL(true, newEvent);
 }
 
 // Test no generacion de eventos en end
@@ -636,7 +644,6 @@ void test_mainfsm_no_generar_eventos_en_end(void)
     fsmCmd(RUN);
     fsmCmd(GR);
     resetEvent();
-    fsmCmd(RUN);
     fsmCmd(GR);
     event = getEvent();
     newEvent = getNewEvent();

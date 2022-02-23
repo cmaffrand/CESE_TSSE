@@ -41,13 +41,9 @@ void fsmCmd(mainFsmCmd_t cmd)
     {
     case INIT:
         if (cmd == LD)
-        {
             state = WAITLS;
-        }
         else if (cmd == LS)
-        {
             state = WAITLD;
-        }
         break;
     case WAITLS:
         if (cmd == LS)
@@ -91,6 +87,11 @@ void fsmCmd(mainFsmCmd_t cmd)
             newEvent = true;
             event = EVENT_GR;
         }
+        else if (cmd == RUN)
+        {
+            newEvent = true;
+            event = EVENT_RUN;
+        }
         break;
     case END:
         if (cmd == CFG)
@@ -98,6 +99,12 @@ void fsmCmd(mainFsmCmd_t cmd)
             state = ARMED;
             newEvent = true;
             event = EVENT_CFG;
+        }
+        else if (cmd == RUN)
+        {
+            state = REPORT;
+            newEvent = true;
+            event = EVENT_RUN;
         }
         break;
     default:
