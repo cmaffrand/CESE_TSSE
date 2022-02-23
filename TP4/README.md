@@ -10,4 +10,4 @@ Para ello se implementa la maquina de estados general del programa a implementar
 
 A continuación se muestra un diagrama de la FSM implementada:
 
-![alt text](https://github.com/cmaffrand/CESE_TSSE/TP4/img/fsm.png)
+![alt text](https://github.com/cmaffrand/CESE_TSSE/blob/main/TP4/img/fsm.png)
