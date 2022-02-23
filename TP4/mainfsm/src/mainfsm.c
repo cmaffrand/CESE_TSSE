@@ -1,10 +1,14 @@
 #include <stdbool.h>
 #include "mainfsm.h"
 
+#define INVALID_CMD ((cmd > RST)|| (cmd < LD))
+#define VALID_STATE ((state >= INIT) && (state <= END))
+
 mainFsmStates_t state;
 event_t event;
 bool newEvent;
 
+// Inicializacion de la maquina de estados
 void fsmInit(void)
 {
     state = INIT;
@@ -28,6 +32,7 @@ bool getNewEvent(void)
     return newEvent;
 }
 
+// Reset de Eventos generados por FSM
 void resetEvent(void)
 {
     newEvent = false;
@@ -35,6 +40,13 @@ void resetEvent(void)
     return;
 }
 
+void forceState(mainFsmStates_t forcedState)
+{
+    state = forcedState;
+    return;
+}
+
+// Maquina de estados manejada por comandos del sistema
 void fsmCmd(mainFsmCmd_t cmd)
 {
     switch (state)
@@ -111,7 +123,7 @@ void fsmCmd(mainFsmCmd_t cmd)
         break;
     }
 
-    if (cmd == RST)
+    if ((cmd == RST) || INVALID_CMD || !VALID_STATE)
     {
         state = INIT;
         resetEvent();

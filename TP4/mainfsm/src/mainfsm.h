@@ -39,5 +39,6 @@ void fsmCmd(mainFsmCmd_t cmd);
 event_t getEvent(void);
 bool getNewEvent(void);
 void resetEvent(void);
+void forceState(mainFsmStates_t forcedState);
 
 #endif // MAINFSM_H

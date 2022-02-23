@@ -4,6 +4,9 @@
 #include <stdbool.h>
 #include "mainfsm.h"
 
+#define INVALID_CMD 255
+#define INVALID_STATE 255
+
 void setUp(void)
 {
 }
@@ -315,7 +318,7 @@ void test_mainfsm_incorrect_cmd_end(void)
 void test_mainfsm_generar_evento_NONE(void)
 {
     fsmInit();
-    mainFsmStates_t event;
+    event_t event;
     bool newEvent;
     event = getEvent();
     newEvent = getNewEvent();
@@ -327,7 +330,7 @@ void test_mainfsm_generar_evento_NONE(void)
 void test_mainfsm_generar_evento_LD(void)
 {
     fsmInit();
-    mainFsmStates_t event;
+    event_t event;
     bool newEvent;
     fsmCmd(LD);
     event = getEvent();
@@ -340,7 +343,7 @@ void test_mainfsm_generar_evento_LD(void)
 void test_mainfsm_generar_evento_LS(void)
 {
     fsmInit();
-    mainFsmStates_t event;
+    event_t event;
     bool newEvent;
     fsmCmd(LS);
     event = getEvent();
@@ -353,7 +356,7 @@ void test_mainfsm_generar_evento_LS(void)
 void test_mainfsm_generar_evento_LDLD(void)
 {
     fsmInit();
-    mainFsmStates_t event;
+    event_t event;
     bool newEvent;
     fsmCmd(LD);
     event = getEvent();
@@ -372,7 +375,7 @@ void test_mainfsm_generar_evento_LDLD(void)
 void test_mainfsm_generar_evento_LSLS(void)
 {
     fsmInit();
-    mainFsmStates_t event;
+    event_t event;
     bool newEvent;
     fsmCmd(LS);
     event = getEvent();
@@ -391,7 +394,7 @@ void test_mainfsm_generar_evento_LSLS(void)
 void test_mainfsm_no_generar_eventos_en_waitls(void)
 {
     fsmInit();
-    mainFsmStates_t event;
+    event_t event;
     bool newEvent;
     fsmCmd(LD);
     resetEvent();
@@ -408,7 +411,7 @@ void test_mainfsm_no_generar_eventos_en_waitls(void)
 void test_mainfsm_no_generar_eventos_en_waitld(void)
 {
     fsmInit();
-    mainFsmStates_t event;
+    event_t event;
     bool newEvent;
     fsmCmd(LS);
     resetEvent();
@@ -425,7 +428,7 @@ void test_mainfsm_no_generar_eventos_en_waitld(void)
 void test_mainfsm_generar_evento_to_unconfig(void)
 {
     fsmInit();
-    mainFsmStates_t event;
+    event_t event;
     bool newEvent;
     fsmCmd(LS);
     event = getEvent();
@@ -456,7 +459,7 @@ void test_mainfsm_generar_evento_to_unconfig(void)
 void test_mainfsm_generar_eventos_unconfig(void)
 {
     fsmInit();
-    mainFsmStates_t event;
+    event_t event;
     bool newEvent;
     fsmCmd(LS);
     fsmCmd(LD);
@@ -485,7 +488,7 @@ void test_mainfsm_generar_eventos_unconfig(void)
 void test_mainfsm_no_generar_eventos_en_unconfig(void)
 {
     fsmInit();
-    mainFsmStates_t event;
+    event_t event;
     bool newEvent;
     fsmCmd(LS);
     fsmCmd(LD);
@@ -502,7 +505,7 @@ void test_mainfsm_no_generar_eventos_en_unconfig(void)
 void test_mainfsm_generar_evento_armed(void)
 {
     fsmInit();
-    mainFsmStates_t event;
+    event_t event;
     bool newEvent;
     fsmCmd(LS);
     fsmCmd(LD);
@@ -537,7 +540,7 @@ void test_mainfsm_generar_evento_armed(void)
 void test_mainfsm_no_generar_eventos_en_armed(void)
 {
     fsmInit();
-    mainFsmStates_t event;
+    event_t event;
     bool newEvent;
     fsmCmd(LS);
     fsmCmd(LD);
@@ -554,7 +557,7 @@ void test_mainfsm_no_generar_eventos_en_armed(void)
 void test_mainfsm_generar_evento_report(void)
 {
     fsmInit();
-    mainFsmStates_t event;
+    event_t event;
     bool newEvent;
     fsmCmd(LS);
     fsmCmd(LD);
@@ -597,7 +600,7 @@ void test_mainfsm_generar_evento_report(void)
 void test_mainfsm_generar_evento_end(void)
 {
     fsmInit();
-    mainFsmStates_t event;
+    event_t event;
     bool newEvent;
     fsmCmd(LS);
     fsmCmd(LD);
@@ -636,7 +639,7 @@ void test_mainfsm_generar_evento_end(void)
 void test_mainfsm_no_generar_eventos_en_end(void)
 {
     fsmInit();
-    mainFsmStates_t event;
+    event_t event;
     bool newEvent;
     fsmCmd(LS);
     fsmCmd(LD);
@@ -655,7 +658,7 @@ void test_mainfsm_no_generar_eventos_en_end(void)
 void test_mainfsm_reset_eventos_rst(void)
 {
     fsmInit();
-    mainFsmStates_t event;
+    event_t event;
     bool newEvent;
     fsmCmd(LS);
     fsmCmd(LD);
@@ -667,6 +670,50 @@ void test_mainfsm_reset_eventos_rst(void)
     newEvent = getNewEvent();
     TEST_ASSERT_EQUAL(EVENT_NONE, event);
     TEST_ASSERT_EQUAL(false, newEvent);
+}
+
+// Test comando fuera de rango
+void test_mainfsm_out_of_range_cmd(void)
+{
+    fsmInit();
+    mainFsmStates_t state;
+    event_t event;
+    bool newEvent;
+    fsmCmd(LS);
+    fsmCmd(LD);
+    fsmCmd(CFG);
+    fsmCmd(RUN);
+    fsmCmd(INVALID_CMD);    
+    state = getState();
+    event = getEvent();
+    newEvent = getNewEvent();
+    TEST_ASSERT_EQUAL(EVENT_NONE, event);
+    TEST_ASSERT_EQUAL(false, newEvent);
+    TEST_ASSERT_EQUAL(INIT, state);
+}
+
+// Test de estado fuera de rango
+void test_mainfsm_out_of_range_state(void)
+{
+    fsmInit();
+    mainFsmStates_t state;
+    event_t event;
+    bool newEvent;
+    fsmCmd(LS);
+    state = getState();
+    event = getEvent();
+    newEvent = getNewEvent();
+    TEST_ASSERT_EQUAL(EVENT_LS, event);
+    TEST_ASSERT_EQUAL(true, newEvent);
+    TEST_ASSERT_EQUAL(WAITLD, state);
+    forceState(INVALID_STATE);
+    fsmCmd(LD);
+    state = getState();
+    event = getEvent();
+    newEvent = getNewEvent();
+    TEST_ASSERT_EQUAL(EVENT_NONE, event);
+    TEST_ASSERT_EQUAL(false, newEvent);
+    TEST_ASSERT_EQUAL(INIT, state);
 }
 
 #endif // TEST
